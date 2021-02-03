@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">Thirty</string>
     <string name="score">Score: </string>
+    <string name="round">Round: </string>
+    <string name="throwNum">Throw: </string>
+
 </resources>

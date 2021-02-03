@@ -1,27 +1,38 @@
 package se.umu.christofferakrin.thirty.models;
 
-import se.umu.christofferakrin.thirty.utils.DiceRoll;
+import java.util.Random;
+
 
 public class Die{
 
-    private final DiceRoll diceRoll = new DiceRoll();
+    private final Random random = new Random();
 
     private int value;
+
+    private boolean selected;
 
     public Die(int value){
         setValue(value);
     }
 
     public Die(){
-        this(0);
+        this(1);
     }
 
     public void roll(){
-        setValue(diceRoll.nextRoll());
+        setValue(nextRoll());
+    }
+
+    public void select(){
+        selected = !selected;
     }
 
     public int getValue(){
         return value;
+    }
+
+    public boolean isSelected(){
+        return selected;
     }
 
     public void setValue(int value){
@@ -44,4 +55,9 @@ public class Die{
 
         return dice;
     }
+
+    private int nextRoll(){
+        return random.nextInt(6) + 1;
+    }
+
 }

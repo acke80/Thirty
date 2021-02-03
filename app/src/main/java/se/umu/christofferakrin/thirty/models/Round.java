@@ -4,10 +4,18 @@ import se.umu.christofferakrin.thirty.utils.PointOptions;
 
 public class Round{
 
-    private PointOptions pointOption;
+    public final int ROUND_THROWS = 3;
+
+    private PointOptions curPointOption;
+    private int curThrow;
+
+    private Die[] dice = new Die[6];
 
     Round(PointOptions pointOption){
-        this.pointOption = pointOption;
+        this.curPointOption = pointOption;
+
+        for(int i = 0; i < 6; i++)
+            dice[i] = new Die();
     }
 
     /** Finds the maximum score.
@@ -17,7 +25,7 @@ public class Round{
 
         int sum = 0;
 
-        if(pointOption == PointOptions.LOW){
+        if(curPointOption == PointOptions.LOW){
 
         }else{
 
@@ -26,5 +34,27 @@ public class Round{
         return sum;
     }
 
+    protected boolean selectDie(int dieIndex){
+        Die die = dice[dieIndex];
+
+        die.select();
+        return die.isSelected();
+    }
+
+    protected void setCurPointOption(PointOptions curPointOption){
+        this.curPointOption = curPointOption;
+    }
+
+    protected PointOptions getCurPointOption(){
+        return curPointOption;
+    }
+
+    protected boolean nextThrow(){
+        return ++curThrow > ROUND_THROWS;
+    }
+
+    protected int getCurThrow(){
+        return curThrow;
+    }
 
 }
