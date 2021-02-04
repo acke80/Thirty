@@ -3,17 +3,20 @@ package se.umu.christofferakrin.thirty.activities;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
 import java.util.Objects;
 
 import se.umu.christofferakrin.thirty.R;
 import se.umu.christofferakrin.thirty.databinding.ActivityMainBinding;
+import se.umu.christofferakrin.thirty.models.Game;
+import se.umu.christofferakrin.thirty.models.ResultActivity;
 import se.umu.christofferakrin.thirty.viewmodels.GameViewModel;
 
 public class GameActivity extends AppCompatActivity{
@@ -22,34 +25,68 @@ public class GameActivity extends AppCompatActivity{
 
     private ActivityMainBinding gameBinding;
 
+    private int[] whiteDieResources;
+    private int[] greyDieResources;
+
+    private ImageButton[] dieButtons;
+
     @Override
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         Objects.requireNonNull(getSupportActionBar()).hide();
 
         gameBinding = ActivityMainBinding.inflate(getLayoutInflater());
-        View view = gameBinding.getRoot();
 
-        setContentView(view);
+        setContentView(gameBinding.getRoot());
 
         gameViewModel = new ViewModelProvider(this).get(GameViewModel.class);
 
-        gameBinding.throwButton.setOnClickListener(v -> {
-            gameViewModel.nextThrow();
-            update();
+        gameBinding.throwButton.setOnClickListener(v -> onActionButton());
+
+        whiteDieResources = new int[]{ R.drawable.white1, R.drawable.white2,
+                R.drawable.white3, R.drawable.white4, R.drawable.white5, R.drawable.white6};
+        greyDieResources = new int[]{ R.drawable.grey1, R.drawable.grey2,
+                R.drawable.grey3, R.drawable.grey4, R.drawable.grey5, R.drawable.grey6};
+
+        dieButtons = new ImageButton[]{ gameBinding.die1, gameBinding.die2,
+                gameBinding.die3, gameBinding.die4, gameBinding.die5, gameBinding.die6};
+
+        createDieButtonListeners();
+
+        gameBinding.optionsSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener(){
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id){
+                gameViewModel.setOption((int) id);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent){
+
+            }
         });
 
-        createButtons();
+        update();
+        updateOptionSpinner();
+    }
 
+    private void onActionButton(){
+        if(gameViewModel.isGameOver())
+            return;
+        gameViewModel.nextThrow();
+        updateOptionSpinner();
         update();
     }
 
     private void update(){
-        updateOptionSpinner();
+        if(gameViewModel.isGameOver()){
+            toGameOverActivity(gameBinding.getRoot());
+        }
+
         updateGameMessage();
         updateGameScore();
         updateGameRound();
         updateGameThrow();
+        updateDieButtons();
     }
 
     private void updateOptionSpinner(){
@@ -57,6 +94,8 @@ public class GameActivity extends AppCompatActivity{
                 R.layout.spinner_item, gameViewModel.getAvailableOptions());
         spinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         gameBinding.optionsSpinner.setAdapter(spinnerArrayAdapter);
+
+        gameBinding.optionsSpinner.setSelection(gameViewModel.getCurOptionIndex());
     }
 
     private void updateGameMessage(){
@@ -87,53 +126,28 @@ public class GameActivity extends AppCompatActivity{
         );
     }
 
-    private void updateDices(){
-
+    private void updateDieButtons(){
+        for(int i = 0; i < 6; i++){
+            if(gameViewModel.isSelectedDie(i))
+                dieButtons[i].setImageResource(greyDieResources[gameViewModel.getDieValue(i) - 1]);
+            else
+                dieButtons[i].setImageResource(whiteDieResources[gameViewModel.getDieValue(i) - 1]);
+        }
     }
 
-    private void createButtons(){
-        /* TODO: make less hard coded by implementing die button listener */
-        gameBinding.die1.setOnClickListener(v -> {
-            if(gameViewModel.selectDie(0)){
-                gameBinding.die1.setImageResource(R.drawable.grey1);
-            }else{
-                gameBinding.die1.setImageResource(R.drawable.white1);
-            }
-        });
-        gameBinding.die2.setOnClickListener(v -> {
-            if(gameViewModel.selectDie(1)){
-                gameBinding.die2.setImageResource(R.drawable.grey2);
-            }else{
-                gameBinding.die2.setImageResource(R.drawable.white2);
-            }
-        });
-        gameBinding.die3.setOnClickListener(v -> {
-            if(gameViewModel.selectDie(2)){
-                gameBinding.die3.setImageResource(R.drawable.grey3);
-            }else{
-                gameBinding.die3.setImageResource(R.drawable.white3);
-            }
-        });
-        gameBinding.die4.setOnClickListener(v -> {
-            if(gameViewModel.selectDie(3)){
-                gameBinding.die4.setImageResource(R.drawable.grey4);
-            }else{
-                gameBinding.die4.setImageResource(R.drawable.white4);
-            }
-        });
-        gameBinding.die5.setOnClickListener(v -> {
-            if(gameViewModel.selectDie(4)){
-                gameBinding.die5.setImageResource(R.drawable.grey5);
-            }else{
-                gameBinding.die5.setImageResource(R.drawable.white5);
-            }
-        });
-        gameBinding.die6.setOnClickListener(v -> {
-            if(gameViewModel.selectDie(5)){
-                gameBinding.die6.setImageResource(R.drawable.grey6);
-            }else{
-                gameBinding.die6.setImageResource(R.drawable.white6);
-            }
-        });
+    private void createDieButtonListeners(){
+        for(int i = 0; i < dieButtons.length; i++){
+            final int finalI = i;
+            dieButtons[i].setOnClickListener(v -> {
+                gameViewModel.selectDie(finalI);
+                update();
+            });
+        }
+    }
+
+    private void toGameOverActivity(View view){
+        Intent intent = new Intent(this, ResultActivity.class);
+        intent.putExtra("game", "game over");
+        startActivity(intent);
     }
 }

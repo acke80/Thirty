@@ -29,4 +29,13 @@ public enum PointOptions{
     public static ArrayList<PointOptions> valuesAsList(){
         return new ArrayList<>(Arrays.asList(PointOptions.values()));
     }
+
+    public static String[] toStringArray(ArrayList<PointOptions> pointOptions){
+        String[] names = new String[pointOptions.size()];
+
+        for(int i = 0; i < names.length; i++)
+            names[i] = pointOptions.get(i).name();
+
+        return names;
+    }
 }

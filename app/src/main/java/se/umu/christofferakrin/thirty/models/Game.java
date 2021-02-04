@@ -4,6 +4,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import se.umu.christofferakrin.thirty.utils.PointOptions;
 
@@ -18,35 +19,50 @@ public class Game implements Parcelable{
 
     private int score;
 
+    private boolean gameOver;
+
     private String gameMessage = "Select dices to keep";
 
     public Game(){
         rounds[curRound] = new Round(PointOptions.LOW);
     }
 
-    public boolean selectDie(int dieIndex){
-        return rounds[curRound].selectDie(dieIndex);
+    public void selectDie(int dieIndex){
+        rounds[curRound].selectDie(dieIndex);
     }
 
-    public void setOption(String option){
+    public boolean isSelectedDie(int dieIndex){
+        return rounds[curRound].isSelectedDie(dieIndex);
+    }
 
+    public int getDieValue(int dieIndex){
+        return rounds[curRound].getDieValue(dieIndex);
+    }
+
+    public void setOption(int index){
+        rounds[curRound].setCurPointOption(availablePointOptions.get(index));
     }
 
     public void nextThrow(){
-        score++;
+        if(rounds[curRound].nextThrow())
+            nextRound();
     }
 
-    /** Set the game to next round.
-     * @return false if game is out of rounds, else true. */
-    public boolean nextRound(){
+    /** Set the game to next round. */
+    public void nextRound(){
         availablePointOptions.remove(rounds[curRound].getCurPointOption());
 
-        if(++curRound > GAME_ROUNDS)
-            return false;
+        score += rounds[curRound].getFinalScore();
+
+        System.out.println("SCORE: "+ score + " OPTION:" + rounds[curRound].getCurPointOption().name());
+
+        if(++curRound >= GAME_ROUNDS){
+            gameOver = true;
+            return;
+        }
 
         rounds[curRound] = new Round(availablePointOptions.get(0));
 
-        return true;
     }
 
     public String getGameMessage(){
@@ -65,6 +81,14 @@ public class Game implements Parcelable{
         return rounds[curRound].getCurThrow();
     }
 
+    public int getCurOptionIndex(){
+        for(int i = 0; i < availablePointOptions.size(); i++){
+            if(availablePointOptions.get(i) == rounds[curRound].getCurPointOption())
+                return i;
+        }
+        return 0;
+    }
+
     /** Converts the available point options to a string array. */
     public String[] getAvailableOptions(){
         String[] options = new String[availablePointOptions.size()];
@@ -80,10 +104,20 @@ public class Game implements Parcelable{
         return options;
     }
 
+    public boolean isGameOver(){
+        return gameOver;
+    }
+
     protected Game(Parcel in){
+        rounds = in.createTypedArray(Round.CREATOR);
         curRound = in.readInt();
         score = in.readInt();
         gameMessage = in.readString();
+
+        String[] names = (String[]) in.readValue(String[].class.getClassLoader());
+        System.out.println(Arrays.toString(names));
+        availablePointOptions.clear();
+        for(String name : names) availablePointOptions.add(PointOptions.valueOf(name));
     }
 
     public static final Creator<Game> CREATOR = new Creator<Game>(){
@@ -105,8 +139,10 @@ public class Game implements Parcelable{
 
     @Override
     public void writeToParcel(Parcel dest, int flags){
+        dest.writeTypedArray(rounds, flags);
         dest.writeInt(curRound);
         dest.writeInt(score);
         dest.writeString(gameMessage);
+        dest.writeValue(PointOptions.toStringArray(availablePointOptions));
     }
 }

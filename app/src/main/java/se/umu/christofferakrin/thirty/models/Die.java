@@ -1,9 +1,12 @@
 package se.umu.christofferakrin.thirty.models;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.util.Random;
 
 
-public class Die{
+public class Die implements Parcelable{
 
     private final Random random = new Random();
 
@@ -17,6 +20,7 @@ public class Die{
 
     public Die(){
         this(1);
+        roll();
     }
 
     public void roll(){
@@ -60,4 +64,31 @@ public class Die{
         return random.nextInt(6) + 1;
     }
 
+    protected Die(Parcel in){
+        value = in.readInt();
+        selected = in.readByte() != 0;
+    }
+
+    public static final Creator<Die> CREATOR = new Creator<Die>(){
+        @Override
+        public Die createFromParcel(Parcel in){
+            return new Die(in);
+        }
+
+        @Override
+        public Die[] newArray(int size){
+            return new Die[size];
+        }
+    };
+
+    @Override
+    public int describeContents(){
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags){
+        dest.writeInt(value);
+        dest.writeByte((byte) (selected ? 1 : 0));
+    }
 }
