@@ -20,8 +20,7 @@ public class Game implements Parcelable{
     private int score;
 
     private boolean gameOver;
-
-    private String gameMessage = "Select dices to keep";
+    private boolean nextRound;
 
     public Game(){
         rounds[curRound] = new Round(PointOptions.LOW);
@@ -35,6 +34,10 @@ public class Game implements Parcelable{
         return rounds[curRound].isSelectedDie(dieIndex);
     }
 
+    public boolean isNextRound(){
+        return nextRound;
+    }
+
     public int getDieValue(int dieIndex){
         return rounds[curRound].getDieValue(dieIndex);
     }
@@ -44,29 +47,34 @@ public class Game implements Parcelable{
     }
 
     public void nextThrow(){
-        if(rounds[curRound].nextThrow())
-            nextRound();
+        boolean newRound = rounds[curRound].nextThrow();
+
+        if(curRound >= GAME_ROUNDS - 1 && newRound){
+            gameOver = true;
+        }else if(newRound){
+            nextRound = true;
+        }
     }
 
     /** Set the game to next round. */
     public void nextRound(){
+        nextRound = false;
+
         availablePointOptions.remove(rounds[curRound].getCurPointOption());
 
         score += rounds[curRound].getFinalScore();
 
-        System.out.println("SCORE: "+ score + " OPTION:" + rounds[curRound].getCurPointOption().name());
-
-        if(++curRound >= GAME_ROUNDS){
-            gameOver = true;
-            return;
-        }
-
-        rounds[curRound] = new Round(availablePointOptions.get(0));
+        rounds[++curRound] = new Round(availablePointOptions.get(0));
 
     }
 
     public String getGameMessage(){
-        return gameMessage;
+        if(gameOver)
+            return "Finish!";
+        else if(nextRound)
+            return "Choose Point option";
+        else
+            return "Select dices to keep";
     }
 
     public int getScore(){
@@ -112,7 +120,6 @@ public class Game implements Parcelable{
         rounds = in.createTypedArray(Round.CREATOR);
         curRound = in.readInt();
         score = in.readInt();
-        gameMessage = in.readString();
 
         String[] names = (String[]) in.readValue(String[].class.getClassLoader());
         System.out.println(Arrays.toString(names));
@@ -142,7 +149,6 @@ public class Game implements Parcelable{
         dest.writeTypedArray(rounds, flags);
         dest.writeInt(curRound);
         dest.writeInt(score);
-        dest.writeString(gameMessage);
         dest.writeValue(PointOptions.toStringArray(availablePointOptions));
     }
 }

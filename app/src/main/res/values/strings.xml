@@ -1,7 +1,20 @@
 <resources>
     <string name="app_name">Thirty</string>
     <string name="score">Score: </string>
-    <string name="round">Round: </string>
+    <string name="round">Round</string>
+
+    <string-array name="throwArray">
+        <item>First throw</item>
+        <item>Second throw</item>
+        <item>Out of throws</item>
+    </string-array>
     <string name="throwNum">Throw: </string>
+
+    <string name="throwButton">Throw</string>
+    <string name="nextRoundButton">Next Round</string>
+    <string name="finishButton">Show Results</string>
+
+    <string name="startButton">Start Game</string>
+    <string name="startTitle">Thirty Throws</string>
 
 </resources>

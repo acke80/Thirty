@@ -21,26 +21,32 @@ public class GameViewModel extends ViewModel{
             game = stateHandle.get("game");
         else{
             game = new Game();
-            stateHandle.set("game", game);
+            saveState();
         }
     }
 
     /** Called when we press a die button. */
     public void selectDie(int dieIndex){
         game.selectDie(dieIndex);
-        stateHandle.set("game", game);
+        saveState();
     }
 
     /** Called when we change the option in the option spinner. */
     public void setOption(int index){
         game.setOption(index);
-        stateHandle.set("game", game);
+        saveState();
     }
 
     /** Called when we press the throw button. */
     public void nextThrow(){
         game.nextThrow();
-        stateHandle.set("game", game);
+        saveState();
+    }
+
+    /** Called when we press next round button. */
+    public void nextRound(){
+        game.nextRound();
+        saveState();
     }
 
     public boolean isSelectedDie(int dieIndex){
@@ -68,7 +74,7 @@ public class GameViewModel extends ViewModel{
     }
 
     public int getCurThrow(){
-        return game.getCurThrow() + 1;
+        return game.getCurThrow();
     }
 
     public int getCurOptionIndex(){
@@ -77,5 +83,13 @@ public class GameViewModel extends ViewModel{
 
     public boolean isGameOver(){
         return game.isGameOver();
+    }
+
+    public boolean isNextRound(){
+        return game.isNextRound();
+    }
+
+    private void saveState(){
+        stateHandle.set("game", game);
     }
 }

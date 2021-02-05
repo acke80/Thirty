@@ -122,14 +122,13 @@ public class Round implements Parcelable{
 
     /** @return True if the round is over, else false. */
     protected boolean nextThrow(){
-        if(++curThrow >= ROUND_THROWS)
-            return true;
+        curThrow++;
 
         for(Die die : dice)
             if(!die.isSelected())
                 die.roll();
 
-        return false;
+        return curThrow >= ROUND_THROWS - 1;
     }
 
     protected int getCurThrow(){

@@ -9,13 +9,11 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
-import android.widget.Toast;
 
 import java.util.Objects;
 
 import se.umu.christofferakrin.thirty.R;
-import se.umu.christofferakrin.thirty.databinding.ActivityMainBinding;
-import se.umu.christofferakrin.thirty.models.Game;
+import se.umu.christofferakrin.thirty.databinding.ActivityGameBinding;
 import se.umu.christofferakrin.thirty.models.ResultActivity;
 import se.umu.christofferakrin.thirty.viewmodels.GameViewModel;
 
@@ -23,7 +21,7 @@ public class GameActivity extends AppCompatActivity{
 
     private GameViewModel gameViewModel;
 
-    private ActivityMainBinding gameBinding;
+    private ActivityGameBinding gameBinding;
 
     private int[] whiteDieResources;
     private int[] greyDieResources;
@@ -35,13 +33,12 @@ public class GameActivity extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         Objects.requireNonNull(getSupportActionBar()).hide();
 
-        gameBinding = ActivityMainBinding.inflate(getLayoutInflater());
-
+        gameBinding = ActivityGameBinding.inflate(getLayoutInflater());
         setContentView(gameBinding.getRoot());
 
         gameViewModel = new ViewModelProvider(this).get(GameViewModel.class);
 
-        gameBinding.throwButton.setOnClickListener(v -> onActionButton());
+        gameBinding.actionButton.setOnClickListener(v -> onActionButton());
 
         whiteDieResources = new int[]{ R.drawable.white1, R.drawable.white2,
                 R.drawable.white3, R.drawable.white4, R.drawable.white5, R.drawable.white6};
@@ -71,15 +68,23 @@ public class GameActivity extends AppCompatActivity{
 
     private void onActionButton(){
         if(gameViewModel.isGameOver())
-            return;
-        gameViewModel.nextThrow();
+            toGameOverActivity(gameBinding.getRoot());
+        else if(gameViewModel.isNextRound())
+            gameViewModel.nextRound();
+        else
+            gameViewModel.nextThrow();
+
         updateOptionSpinner();
         update();
     }
 
     private void update(){
         if(gameViewModel.isGameOver()){
-            toGameOverActivity(gameBinding.getRoot());
+            gameBinding.actionButton.setText(R.string.finishButton);
+        }else if(gameViewModel.isNextRound()){
+            gameBinding.actionButton.setText(R.string.nextRoundButton);
+        }else{
+            gameBinding.actionButton.setText(R.string.throwButton);
         }
 
         updateGameMessage();
@@ -119,15 +124,27 @@ public class GameActivity extends AppCompatActivity{
     }
 
     private void updateGameThrow(){
-        gameBinding.setThrowNum(
+        /*gameBinding.setThrowNum(
                 getResources().getString(R.string.throwNum) +
                         " " +
                         gameViewModel.getCurThrow()
-        );
+        );*/
+        String[] throwArray = getResources().getStringArray(R.array.throwArray);
+        gameBinding.setThrowNum(throwArray[gameViewModel.getCurThrow()]);
     }
 
     private void updateDieButtons(){
+        if(gameViewModel.isNextRound()){
+            for(int i = 0; i < 6; i++){
+                dieButtons[i].setClickable(false);
+                dieButtons[i].setImageResource(whiteDieResources[gameViewModel.getDieValue(i) - 1]);
+            }
+            return;
+        }
+
         for(int i = 0; i < 6; i++){
+            dieButtons[i].setClickable(true);
+
             if(gameViewModel.isSelectedDie(i))
                 dieButtons[i].setImageResource(greyDieResources[gameViewModel.getDieValue(i) - 1]);
             else
