@@ -9,38 +9,58 @@
             android:layout_height="match_parent"
             android:orientation="vertical"
             tools:context=".activities.GameActivity"
-            android:background="@color/gray">
+            android:background="@color/gray"
+            >
 
-        <TextView
+        <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:textColor="@color/teal_200"
-                android:shadowColor="@color/black"
-                android:shadowDx="0"
-                android:shadowDy="4"
-                android:shadowRadius="2"
-                android:fontFamily="sans-serif-thin"
-                android:textSize="36sp"
-                android:text="@string/startTitle"
-                tools:ignore="MissingConstraints"
-                android:id="@+id/textView"
-                app:layout_constraintBottom_toTopOf="@+id/start_button"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent" />
-
-
-        <Button
-                android:text="@string/startButton"
-                android:layout_height="80dp"
-                android:layout_width="0dp"
-                android:backgroundTint="@color/purple_700"
-                android:id="@+id/start_button"
+                android:orientation="vertical"
                 tools:ignore="MissingConstraints"
                 app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent" />
+                app:layout_constraintStart_toStartOf="parent"
+                >
+
+
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:textColor="@color/teal_200"
+                    android:shadowColor="@color/black"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:focusableInTouchMode="true"
+                    android:shadowDx="0"
+                    android:shadowDy="4"
+                    android:shadowRadius="2"
+                    android:fontFamily="sans-serif-thin"
+                    android:textSize="36sp"
+                    android:text="@string/startTitle"
+                    android:id="@+id/textView" />
+
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:textColor="@color/teal_700"
+                    android:shadowColor="@color/black"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:focusableInTouchMode="true"
+                    android:shadowDx="0"
+                    android:shadowDy="4"
+                    android:shadowRadius="2"
+                    android:fontFamily="sans-serif-thin"
+                    android:textSize="24sp"
+                    android:text="Tap to start"
+                    android:id="@+id/textView2"
+                    />
+
+        </LinearLayout>
+
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

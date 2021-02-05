@@ -4,14 +4,12 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
+import android.view.MotionEvent;
 
 import java.util.Objects;
 
 import se.umu.christofferakrin.thirty.R;
-import se.umu.christofferakrin.thirty.databinding.ActivityGameBinding;
 import se.umu.christofferakrin.thirty.databinding.ActivityStartBinding;
-import se.umu.christofferakrin.thirty.models.ResultActivity;
 
 public class StartActivity extends AppCompatActivity{
 
@@ -20,17 +18,27 @@ public class StartActivity extends AppCompatActivity{
     @Override
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_start);
         Objects.requireNonNull(getSupportActionBar()).hide();
 
         startBinding = ActivityStartBinding.inflate(getLayoutInflater());
         setContentView(startBinding.getRoot());
+    }
 
-        startBinding.startButton.setOnClickListener(v -> toGameActivity(startBinding.getRoot()));
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+
+        if (event.getAction() == MotionEvent.ACTION_UP) {
+            toGameActivity();
+            return true;
+        } else {
+            return false;
+        }
     }
 
 
-    private void toGameActivity(View view){
+    private void toGameActivity(){
         Intent intent = new Intent(this, GameActivity.class);
         startActivity(intent);
     }

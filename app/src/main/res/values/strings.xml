@@ -8,7 +8,6 @@
         <item>Second throw</item>
         <item>Out of throws</item>
     </string-array>
-    <string name="throwNum">Throw: </string>
 
     <string name="throwButton">Throw</string>
     <string name="nextRoundButton">Next Round</string>
@@ -16,5 +15,10 @@
 
     <string name="startButton">Start Game</string>
     <string name="startTitle">Thirty Throws</string>
+
+    <string name="finish">Finish!</string>
+    <string name="choosePointOption">Choose point option</string>
+    <string name="onlyOneOptionLeft">Only one option left</string>
+    <string name="selectDicesToKeep">Select dices to keep</string>
 
 </resources>

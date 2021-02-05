@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel;
 import java.util.ArrayList;
 
 import se.umu.christofferakrin.thirty.models.Game;
+import se.umu.christofferakrin.thirty.models.Result;
 
 public class GameViewModel extends ViewModel{
 
@@ -61,8 +62,8 @@ public class GameViewModel extends ViewModel{
         return game.getAvailableOptions();
     }
 
-    public String getGameMessage(){
-        return game.getGameMessage();
+    public int getGameMessageResource(){
+        return game.getGameMessageResource();
     }
 
     public int getCurGameScore(){
@@ -87,6 +88,10 @@ public class GameViewModel extends ViewModel{
 
     public boolean isNextRound(){
         return game.isNextRound();
+    }
+
+    public Result getResult(){
+        return game.getResult();
     }
 
     private void saveState(){

@@ -6,6 +6,7 @@ import android.os.Parcelable;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import se.umu.christofferakrin.thirty.R;
 import se.umu.christofferakrin.thirty.utils.PointOptions;
 
 public class Game implements Parcelable{
@@ -21,6 +22,8 @@ public class Game implements Parcelable{
 
     private boolean gameOver;
     private boolean nextRound;
+
+    private Result result;
 
     public Game(){
         rounds[curRound] = new Round(PointOptions.LOW);
@@ -47,13 +50,7 @@ public class Game implements Parcelable{
     }
 
     public void nextThrow(){
-        boolean newRound = rounds[curRound].nextThrow();
-
-        if(curRound >= GAME_ROUNDS - 1 && newRound){
-            gameOver = true;
-        }else if(newRound){
-            nextRound = true;
-        }
+        nextRound = rounds[curRound].nextThrow();
     }
 
     /** Set the game to next round. */
@@ -64,17 +61,23 @@ public class Game implements Parcelable{
 
         score += rounds[curRound].getFinalScore();
 
-        rounds[++curRound] = new Round(availablePointOptions.get(0));
+        if(isLastRound()){
+            gameOver = true;
+            result = new Result(score, rounds);
+        }else
+            rounds[++curRound] = new Round(availablePointOptions.get(0));
 
     }
 
-    public String getGameMessage(){
+    public int getGameMessageResource(){
         if(gameOver)
-            return "Finish!";
+            return R.string.finish;
+        else if(isLastRound() && nextRound)
+            return R.string.onlyOneOptionLeft;
         else if(nextRound)
-            return "Choose Point option";
+            return R.string.choosePointOption;
         else
-            return "Select dices to keep";
+            return R.string.selectDicesToKeep;
     }
 
     public int getScore(){
@@ -97,6 +100,10 @@ public class Game implements Parcelable{
         return 0;
     }
 
+    public boolean isLastRound(){
+        return curRound >= GAME_ROUNDS - 1;
+    }
+
     /** Converts the available point options to a string array. */
     public String[] getAvailableOptions(){
         String[] options = new String[availablePointOptions.size()];
@@ -116,11 +123,15 @@ public class Game implements Parcelable{
         return gameOver;
     }
 
+    public Result getResult(){
+        return result;
+    }
+
     protected Game(Parcel in){
         rounds = in.createTypedArray(Round.CREATOR);
         curRound = in.readInt();
         score = in.readInt();
-
+        result = in.readParcelable(Result.class.getClassLoader());
         String[] names = (String[]) in.readValue(String[].class.getClassLoader());
         System.out.println(Arrays.toString(names));
         availablePointOptions.clear();
@@ -149,6 +160,7 @@ public class Game implements Parcelable{
         dest.writeTypedArray(rounds, flags);
         dest.writeInt(curRound);
         dest.writeInt(score);
+        dest.writeParcelable(result, flags);
         dest.writeValue(PointOptions.toStringArray(availablePointOptions));
     }
 }

@@ -14,7 +14,6 @@ import java.util.Objects;
 
 import se.umu.christofferakrin.thirty.R;
 import se.umu.christofferakrin.thirty.databinding.ActivityGameBinding;
-import se.umu.christofferakrin.thirty.models.ResultActivity;
 import se.umu.christofferakrin.thirty.viewmodels.GameViewModel;
 
 public class GameActivity extends AppCompatActivity{
@@ -68,7 +67,7 @@ public class GameActivity extends AppCompatActivity{
 
     private void onActionButton(){
         if(gameViewModel.isGameOver())
-            toGameOverActivity(gameBinding.getRoot());
+            toGameOverActivity();
         else if(gameViewModel.isNextRound())
             gameViewModel.nextRound();
         else
@@ -79,6 +78,12 @@ public class GameActivity extends AppCompatActivity{
     }
 
     private void update(){
+        updateGameMessage();
+        updateGameScore();
+        updateGameRound();
+        updateGameThrow();
+        updateDieButtons();
+
         if(gameViewModel.isGameOver()){
             gameBinding.actionButton.setText(R.string.finishButton);
         }else if(gameViewModel.isNextRound()){
@@ -86,15 +91,15 @@ public class GameActivity extends AppCompatActivity{
         }else{
             gameBinding.actionButton.setText(R.string.throwButton);
         }
-
-        updateGameMessage();
-        updateGameScore();
-        updateGameRound();
-        updateGameThrow();
-        updateDieButtons();
     }
 
     private void updateOptionSpinner(){
+        if(gameViewModel.isGameOver()){
+            gameBinding.optionsSpinner.setVisibility(View.GONE);
+            return;
+        }else
+            gameBinding.optionsSpinner.setVisibility(View.VISIBLE);
+
         ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<>(this,
                 R.layout.spinner_item, gameViewModel.getAvailableOptions());
         spinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -104,7 +109,7 @@ public class GameActivity extends AppCompatActivity{
     }
 
     private void updateGameMessage(){
-        gameBinding.setMessage(gameViewModel.getGameMessage());
+        gameBinding.setMessage(getResources().getString(gameViewModel.getGameMessageResource()));
     }
 
     private void updateGameScore(){
@@ -124,11 +129,6 @@ public class GameActivity extends AppCompatActivity{
     }
 
     private void updateGameThrow(){
-        /*gameBinding.setThrowNum(
-                getResources().getString(R.string.throwNum) +
-                        " " +
-                        gameViewModel.getCurThrow()
-        );*/
         String[] throwArray = getResources().getStringArray(R.array.throwArray);
         gameBinding.setThrowNum(throwArray[gameViewModel.getCurThrow()]);
     }
@@ -137,7 +137,12 @@ public class GameActivity extends AppCompatActivity{
         if(gameViewModel.isNextRound()){
             for(int i = 0; i < 6; i++){
                 dieButtons[i].setClickable(false);
-                dieButtons[i].setImageResource(whiteDieResources[gameViewModel.getDieValue(i) - 1]);
+                dieButtons[i].setImageResource(greyDieResources[gameViewModel.getDieValue(i) - 1]);
+            }
+            return;
+        }else if(gameViewModel.isGameOver()){
+            for(int i = 0; i < 6; i++){
+                dieButtons[i].setVisibility(View.GONE);
             }
             return;
         }
@@ -162,9 +167,9 @@ public class GameActivity extends AppCompatActivity{
         }
     }
 
-    private void toGameOverActivity(View view){
+    private void toGameOverActivity(){
         Intent intent = new Intent(this, ResultActivity.class);
-        intent.putExtra("game", "game over");
+        intent.putExtra("result", gameViewModel.getResult());
         startActivity(intent);
     }
 }

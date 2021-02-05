@@ -120,6 +120,10 @@ public class Round implements Parcelable{
         return curPointOption;
     }
 
+    protected boolean isLastThrow(){
+        return curThrow >= ROUND_THROWS - 1;
+    }
+
     /** @return True if the round is over, else false. */
     protected boolean nextThrow(){
         curThrow++;
