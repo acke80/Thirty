@@ -16,6 +16,8 @@ public class Round implements Parcelable{
 
     private Die[] dice = new Die[6];
 
+    private int finalScore = -1;
+
     Round(PointOptions pointOption){
         this.curPointOption = pointOption;
 
@@ -27,6 +29,9 @@ public class Round implements Parcelable{
     /** Finds the maximum score for the selected option.
      * @return summation of maximum score. */
     protected int getFinalScore(){
+        if(finalScore != -1)
+            return finalScore;
+
         /* Sort the dies by value and store the values in a list
         * in decreasing order for simplicity. */
         dice = Die.sortDice(this.dice);
@@ -96,7 +101,9 @@ public class Round implements Parcelable{
 
         }
 
-        return score;
+        finalScore = score;
+
+        return finalScore;
     }
 
 

@@ -8,40 +8,35 @@
                 type="String" />
     </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
-            tools:context=".activities.GameActivity"
-            android:background="@color/gray">
-
         <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 android:orientation="vertical"
-                tools:ignore="MissingConstraints"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent">
+                android:background="@color/gray">
 
             <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
+                    android:layout_marginTop="24dp"
+                    android:layout_marginBottom="12dp"
                     android:textColor="@color/teal_200"
                     android:shadowColor="@color/black"
                     android:shadowDx="0"
                     android:shadowDy="4"
                     android:shadowRadius="2"
                     android:fontFamily="sans-serif-thin"
-                    android:textSize="36sp"
+                    android:textSize="42sp"
                     android:text="@{score}"
                     android:id="@+id/textView" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_margin="10dp"
+                    android:id="@+id/recyclerView"/>
 
         </LinearLayout>
 
 
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

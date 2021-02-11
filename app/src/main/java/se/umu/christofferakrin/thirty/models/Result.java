@@ -18,11 +18,31 @@ public class Result implements Parcelable{
 
     }
 
-    public PointOptions getRoundOption(int roundIndex){
-        if(roundIndex >= rounds.length - 1)
-            throw new IllegalArgumentException("Round Index out of range.");
+    public String[] getRoundsAsString(){
+        String[] roundsAsString = new String[rounds.length];
 
-        return rounds[roundIndex].getCurPointOption();
+        for(int i = 1; i <= rounds.length; i++)
+            roundsAsString[i - 1] = Integer.toString(i);
+
+        return roundsAsString;
+    }
+
+    public String[] getOptionsAsString(){
+        String[] options = new String[rounds.length];
+
+        for(int i = 0; i < rounds.length; i++)
+            options[i] = rounds[i].getCurPointOption().name();
+
+        return options;
+    }
+
+    public String[] getScoresAsString(){
+        String[] scores = new String[rounds.length];
+
+        for(int i = 0; i < rounds.length; i++)
+            scores[i] = Integer.toString(rounds[i].getFinalScore());
+
+        return scores;
     }
 
     protected Result(Parcel in){

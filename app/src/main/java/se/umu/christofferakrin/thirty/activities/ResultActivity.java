@@ -1,6 +1,8 @@
 package se.umu.christofferakrin.thirty.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -8,6 +10,7 @@ import android.os.Bundle;
 import java.util.Objects;
 
 import se.umu.christofferakrin.thirty.R;
+import se.umu.christofferakrin.thirty.adapters.ResultRecyclerAdapter;
 import se.umu.christofferakrin.thirty.databinding.ActivityResultBinding;
 import se.umu.christofferakrin.thirty.models.Result;
 
@@ -29,6 +32,22 @@ public class ResultActivity extends AppCompatActivity{
         Intent intent = getIntent();
         result = intent.getParcelableExtra("result");
 
-        resultBinding.setScore(Integer.toString(result.TOTAL_SCORE));
+        resultBinding.setScore("Score: " + result.TOTAL_SCORE);
+
+        String[] rounds = result.getRoundsAsString();
+        String[] scores = result.getScoresAsString();
+        String[] options = result.getOptionsAsString();
+
+        for(int i = 0; i < rounds.length; i++){
+            rounds[i] = getResources().getString(R.string.round) + " " + rounds[i];
+            scores[i] = getResources().getString(R.string.score) + " " + scores[i];
+        }
+
+        ResultRecyclerAdapter recyclerAdapter =
+                new ResultRecyclerAdapter(this, rounds, scores, options);
+        RecyclerView recyclerView = resultBinding.recyclerView;
+        recyclerView.setAdapter(recyclerAdapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
     }
 }
