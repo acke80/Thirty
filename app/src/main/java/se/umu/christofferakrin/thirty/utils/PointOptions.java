@@ -26,10 +26,14 @@ public enum PointOptions{
         SUM = -1;
     }
 
+    /** @return All enum values as an ArrayList. */
     public static ArrayList<PointOptions> valuesAsList(){
         return new ArrayList<>(Arrays.asList(PointOptions.values()));
     }
 
+    /** Converts the given ArrayList of PointOption's into a String array containing
+     * their names.
+     * @return String array of enum names. */
     public static String[] toStringArray(ArrayList<PointOptions> pointOptions){
         String[] names = new String[pointOptions.size()];
 

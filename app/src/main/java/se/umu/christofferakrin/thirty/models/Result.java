@@ -18,7 +18,7 @@ public class Result implements Parcelable{
 
     }
 
-    /** @return All the round numbers as a string array. */
+    /** @return All the round numbers as a String array. */
     public String[] getRoundsAsString(){
         String[] roundsAsString = new String[rounds.length];
 
@@ -28,7 +28,7 @@ public class Result implements Parcelable{
         return roundsAsString;
     }
 
-    /** @return The order of chosen point options for each round as a string array. */
+    /** @return The order of chosen point options for each round as a String array. */
     public String[] getOptionsAsString(){
         String[] options = new String[rounds.length];
 
@@ -38,7 +38,7 @@ public class Result implements Parcelable{
         return options;
     }
 
-    /** @return The final score for each round as a string array. */
+    /** @return The final score for each round as a String array. */
     public String[] getScoresAsString(){
         String[] scores = new String[rounds.length];
 
