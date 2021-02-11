@@ -12,6 +12,7 @@
     <string name="throwButton">Throw</string>
     <string name="nextRoundButton">Next Round</string>
     <string name="finishButton">Show Results</string>
+    <string name="newGameButton">New Game</string>
 
     <string name="startButton">Start Game</string>
     <string name="startTitle">Thirty Throws</string>

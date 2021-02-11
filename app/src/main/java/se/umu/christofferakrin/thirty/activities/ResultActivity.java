@@ -32,7 +32,10 @@ public class ResultActivity extends AppCompatActivity{
         Intent intent = getIntent();
         result = intent.getParcelableExtra("result");
 
-        resultBinding.setScore("Score: " + result.TOTAL_SCORE);
+        resultBinding.setScore(
+                getResources().getString(R.string.score) +
+                " " +
+                result.TOTAL_SCORE);
 
         String[] rounds = result.getRoundsAsString();
         String[] scores = result.getScoresAsString();
@@ -49,5 +52,15 @@ public class ResultActivity extends AppCompatActivity{
         recyclerView.setAdapter(recyclerAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
+        resultBinding.newGameButton.setOnClickListener(v ->{
+            toGameActivity();
+        });
+
+    }
+
+    private void toGameActivity(){
+        Intent intent = new Intent(this, GameActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
     }
 }

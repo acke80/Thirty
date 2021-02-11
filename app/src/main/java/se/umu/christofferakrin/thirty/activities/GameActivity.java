@@ -77,6 +77,7 @@ public class GameActivity extends AppCompatActivity{
         update();
     }
 
+    /** Update all the GameActivity components. */
     private void update(){
         updateGameMessage();
         updateGameScore();
