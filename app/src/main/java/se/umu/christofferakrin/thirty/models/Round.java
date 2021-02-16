@@ -23,6 +23,8 @@ public class Round implements Parcelable{
 
         for(int i = 0; i < 6; i++)
             dice[i] = new Die();
+
+
     }
 
 
@@ -61,44 +63,56 @@ public class Round implements Parcelable{
                 }
             }
 
-            while(dieVals.size() > 1){
-                int firstVal = dieVals.get(0); /* Largest value in list. */
-                int diff = sum - firstVal;
+            int offset = 0;
+            while(true){
+                if(isListSmallerThanSum(dieVals, sum)) break; /* Break if sum of list is smaller than sum. */
+                if(dieVals.size() <= 1) break; /* Break if we have 1 or 0 values left. */
 
                 ArrayList<Integer> combination = new ArrayList<>();
+                int firstVal = dieVals.get(0); /* Largest value in list. */
                 combination.add(firstVal);
 
-                /* Finds the largest values that combine with the largest value
-                * to add up to the option sum.  */
-                for(int i = 1; i < dieVals.size(); i++){
-                    int curVal = dieVals.get(i);
-
-                    if(curVal > diff) continue;
-
-                    if(curVal == diff){
-                        combination.add(curVal);
-                        break;
+                /* Offsets the next value from first value in list.
+                 * We start the summation from this offset value. */
+                offset++;
+                if(offset == dieVals.size()){
+                    dieVals.remove(0);
+                    if(dieVals.size() <= 1) break;
+                    /* If first value was not able to combine itself to equal sum, and
+                     * the next value equals the first value, and their summation is smaller than sum,
+                     * we set their sum as the first value instead. */
+                    if(dieVals.get(1).equals(firstVal) && dieVals.get(1)*2 < sum){
+                        dieVals.remove(0);
+                        dieVals.add(0, firstVal*2);
                     }
 
+                    offset = 0;
+                    continue;
+                }
+
+                for(int i = offset; i < dieVals.size(); i++){
+                    int curVal = dieVals.get(i);
                     combination.add(curVal);
-                    diff -= curVal;
-                }
 
-                int combSum = 0;
-                for(Integer val : combination)
-                    combSum += val;
+                    int combSum = 0; /* Summation of combinations. */
+                    for(Integer val : combination)
+                        combSum += val;
 
-                /* If the combined sum equals the option sum, we add the sum to the score. */
-                if(combSum == sum){
-                    score += sum;
-                }
+                    /* If the combined sum equals the sum, we can remove these values
+                     * from the whole list and add to score. */
+                    if(combSum == sum){
+                        score += sum;
 
-                /* Remove the value(s) that are no longer needed. */
-                for(Integer val : combination){
-                    dieVals.remove(val);
+                        for(Integer val : combination){
+                            dieVals.remove(val);
+                        }
+                        offset = 0;
+                        break;
+                    }else if(combSum > sum){
+                        break;
+                    }
                 }
             }
-
         }
 
         finalScore = score;
@@ -106,6 +120,11 @@ public class Round implements Parcelable{
         return finalScore;
     }
 
+    private boolean isListSmallerThanSum(ArrayList<Integer> values, int sum){
+        int combSum = 0;
+        for(Integer val : values) combSum += val;
+        return combSum < sum;
+    }
 
     protected void selectDie(int dieIndex){
         dice[dieIndex].select();
@@ -177,4 +196,5 @@ public class Round implements Parcelable{
         dest.writeTypedArray(dice, flags);
         dest.writeString(curPointOption.name());
     }
+
 }
