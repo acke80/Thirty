@@ -1,10 +1,8 @@
 package se.umu.christofferakrin.thirty.viewmodels;
 
-import androidx.annotation.NonNull;
 import androidx.lifecycle.SavedStateHandle;
 import androidx.lifecycle.ViewModel;
 
-import java.util.ArrayList;
 
 import se.umu.christofferakrin.thirty.models.Game;
 import se.umu.christofferakrin.thirty.models.Result;

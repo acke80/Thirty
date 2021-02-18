@@ -52,13 +52,10 @@ public class ResultActivity extends AppCompatActivity{
         recyclerView.setAdapter(recyclerAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        resultBinding.newGameButton.setOnClickListener(v ->{
-            toGameActivity();
-        });
-
     }
 
-    private void toGameActivity(){
+    @Override
+    public void onBackPressed(){
         Intent intent = new Intent(this, GameActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);

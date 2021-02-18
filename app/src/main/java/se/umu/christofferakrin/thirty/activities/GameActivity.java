@@ -63,6 +63,16 @@ public class GameActivity extends AppCompatActivity{
 
         update();
         updateOptionSpinner();
+
+    }
+
+    @Override
+    protected void onStop(){
+        super.onStop();
+        if(gameViewModel.isGameOver())
+            toGameOverActivity();
+        else if(gameViewModel.isNextRound())
+            gameViewModel.nextRound();
     }
 
     private void onActionButton(){

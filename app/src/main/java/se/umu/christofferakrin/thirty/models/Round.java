@@ -80,7 +80,7 @@ public class Round implements Parcelable{
                     if(dieVals.size() <= 1) break;
                     /* If first value was not able to combine itself to equal sum, and
                      * the next value equals the first value, and their summation is smaller than sum,
-                     * we set their sum as the first value instead. */
+                     * we set their sum as the first value instead. Helps with certain edge-cases. */
                     if(dieVals.get(1).equals(firstVal) && dieVals.get(1)*2 < sum){
                         dieVals.remove(0);
                         dieVals.add(0, firstVal*2);
